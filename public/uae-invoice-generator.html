@@ -1,0 +1,895 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UAE Invoice Generator - Free VAT Invoice with TRN</title>
+<meta name="description" content="Create a VAT-compliant UAE tax invoice with your TRN, apply 5% VAT automatically and download a free PDF in seconds. No signup, no watermark, no limits.">
+<link rel="canonical" href="https://mayantha.ae/uae-invoice-generator">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://mayantha.ae/uae-invoice-generator">
+<meta property="og:title" content="UAE Invoice Generator - Free VAT Invoice with TRN">
+<meta property="og:description" content="Create a VAT-compliant UAE tax invoice with your TRN, apply 5% VAT automatically and download a free PDF in seconds. No signup, no watermark, no limits.">
+<meta property="og:site_name" content="Mayantha">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS (brand system - single source of truth) ============ */
+:root{
+  /* color */
+  --paper:#ffffff;
+  --ink:#161C2D;
+  --ink-2:#565b66;
+  --ink-3:#757A85;
+  --wash:#F4F7FA;
+  --wash-2:#e9eef4;
+  --line:#E7E9ED;
+  --line-2:#d4d8df;
+  --brand:#0263FA;
+  --brand-ink:#ffffff;
+  --green-strong:#15A34A;
+  --red:#fa403b;
+  --paper-2:rgba(255,255,255,.62);
+  --line-dark:rgba(255,255,255,.14);
+
+  /* type */
+  --font-body:'Poppins',Arial,sans-serif;
+  --text-2xs:11px;
+  --text-xs:12px; --text-sm:14px; --text-base:16px;
+  --text-lg:clamp(16px,1.4vw,20px);
+  --text-xl:clamp(18px,1.9vw,24px);
+  --text-2xl:clamp(22px,2.6vw,34px);
+  --text-hero:clamp(28px,4.6vw,54px);
+  --leading-display:0.98; --leading-body:1.55;
+  --tracking-display:-0.045em; --tracking-label:0.14em;
+
+  /* space (4/8 base) */
+  --space-3xs:4px; --space-2xs:8px; --space-xs:12px; --space-sm:16px;
+  --space-md:24px; --space-lg:32px; --space-xl:48px; --space-2xl:64px;
+  --space-3xl:96px;
+  --gutter:clamp(24px,6vw,96px);
+  --maxw:1320px;
+
+  /* radius */
+  --radius:3px;
+
+  /* derived tokens (wireframe-local, still tokens) */
+  --hairline:1px;
+  --control-h:42px;
+  --ease-reveal:cubic-bezier(0.22,0.8,0.18,1);
+  --dur-reveal:0.6s;
+  --dur-micro:180ms;
+  --doc-pad:clamp(24px,4.2vw,56px);
+}
+
+/* ============ BASE ============ */
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-body);
+  font-size:var(--text-base);
+  line-height:var(--leading-body);
+  color:var(--ink);
+  background:var(--paper);
+  -webkit-font-smoothing:antialiased;
+}
+.container{max-width:var(--maxw);margin:0 auto;padding-left:var(--gutter);padding-right:var(--gutter)}
+a{color:inherit;text-decoration:none}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{
+  outline:2px solid var(--brand);outline-offset:2px;border-radius:var(--radius);
+}
+.label{
+  font-size:var(--text-xs);font-weight:500;letter-spacing:var(--tracking-label);
+  text-transform:uppercase;color:var(--ink-3);
+}
+
+/* ============ ENTRY REVEAL ============ */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity var(--dur-reveal) var(--ease-reveal),transform var(--dur-reveal) var(--ease-reveal)}
+.reveal.in{opacity:1;transform:translateY(0)}
+@media (prefers-reduced-motion:reduce){
+  .reveal{opacity:1;transform:none;transition:none}
+  html{scroll-behavior:auto}
+  *{transition-duration:0.01ms!important;animation-duration:0.01ms!important}
+}
+
+/* ============ HEADER ============ */
+.site-header{border-bottom:var(--hairline) solid var(--line);background:var(--paper)}
+.site-header .container{display:flex;align-items:center;justify-content:space-between;height:var(--space-2xl)}
+.wordmark{font-weight:600;font-size:var(--text-lg);letter-spacing:var(--tracking-display);color:var(--ink)}
+.header-nav{display:flex;gap:var(--space-md);align-items:center}
+.header-nav a{font-size:var(--text-sm);color:var(--ink-2);transition:color var(--dur-micro) ease}
+.header-nav a:hover{color:var(--ink)}
+.header-nav a.cta{color:var(--brand);font-weight:500}
+
+/* ============ HERO ============ */
+.hero{padding-top:var(--space-2xl);padding-bottom:var(--space-xl)}
+.hero h1{
+  font-size:var(--text-hero);font-weight:600;line-height:var(--leading-display);
+  letter-spacing:var(--tracking-display);max-width:14ch;
+}
+.hero p{margin-top:var(--space-sm);color:var(--ink-2);font-size:var(--text-lg);max-width:52ch}
+
+/* ============ TOOL WORKSPACE ============ */
+.workspace{padding-bottom:var(--space-3xl)}
+.workspace-grid{
+  display:grid;grid-template-columns:2fr 3fr;gap:var(--space-lg);
+  align-items:start;
+}
+/* ---- form panel ---- */
+.form-panel{
+  border:var(--hairline) solid var(--line);border-radius:var(--radius);
+  background:var(--paper);
+}
+.form-section{padding:var(--space-md);border-bottom:var(--hairline) solid var(--line)}
+.form-section:last-child{border-bottom:0}
+.form-section > .label{display:block;margin-bottom:var(--space-sm)}
+.field{display:flex;flex-direction:column;gap:var(--space-3xs);margin-bottom:var(--space-xs)}
+.field:last-child{margin-bottom:0}
+.field label{font-size:var(--text-xs);color:var(--ink-2);font-weight:500}
+.field input,.field textarea{
+  font-family:var(--font-body);font-size:var(--text-sm);color:var(--ink);
+  border:var(--hairline) solid var(--line-2);border-radius:var(--radius);
+  height:var(--control-h);padding:0 var(--space-xs);background:var(--paper);
+  transition:border-color var(--dur-micro) ease;
+  width:100%;
+}
+.field textarea{height:auto;min-height:var(--space-2xl);padding:var(--space-2xs) var(--space-xs);resize:vertical;line-height:var(--leading-body)}
+.field input:hover,.field textarea:hover{border-color:var(--ink-3)}
+.field input:focus,.field textarea:focus{border-color:var(--brand);outline:none}
+.field .hint{font-size:var(--text-2xs);color:var(--ink-3);min-height:var(--space-sm)}
+.field .hint.ok{color:var(--green-strong)}
+.field .hint.bad{color:var(--red)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xs)}
+.field-row-3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:var(--space-xs)}
+
+/* ---- line items ---- */
+.li-head{display:grid;grid-template-columns:1fr 56px 96px 24px;gap:var(--space-2xs);margin-bottom:var(--space-2xs)}
+.li-head span{font-size:var(--text-2xs);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--ink-3)}
+.li-row{
+  display:grid;grid-template-columns:1fr 56px 96px 24px;gap:var(--space-2xs);
+  margin-bottom:var(--space-2xs);align-items:center;
+}
+.li-row input{
+  font-family:var(--font-body);font-size:var(--text-sm);color:var(--ink);
+  border:var(--hairline) solid var(--line-2);border-radius:var(--radius);
+  height:var(--control-h);padding:0 var(--space-2xs);width:100%;
+  transition:border-color var(--dur-micro) ease;
+}
+.li-row input:hover{border-color:var(--ink-3)}
+.li-row input:focus{border-color:var(--brand);outline:none}
+.li-row input[type=number]{font-variant-numeric:tabular-nums;text-align:right;-moz-appearance:textfield}
+.li-row input::-webkit-outer-spin-button,.li-row input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.li-remove{
+  border:0;background:none;color:var(--ink-3);cursor:pointer;font-size:var(--text-base);
+  height:var(--control-h);width:var(--space-md);
+  transition:color var(--dur-micro) ease;line-height:1;
+}
+.li-remove:hover{color:var(--red)}
+.add-row{
+  border:0;background:none;color:var(--brand);font-family:var(--font-body);
+  font-size:var(--text-sm);font-weight:500;cursor:pointer;padding:var(--space-2xs) 0 0;
+  transition:opacity var(--dur-micro) ease;
+}
+.add-row:hover{opacity:.75}
+
+/* ---- VAT toggle ---- */
+.toggle-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-sm)}
+.toggle-row .t-copy strong{font-size:var(--text-sm);font-weight:500;display:block}
+.toggle-row .t-copy span{font-size:var(--text-2xs);color:var(--ink-3)}
+.switch{position:relative;display:inline-block;flex:none;width:var(--space-xl);height:var(--space-md);cursor:pointer}
+.switch input{opacity:0;width:100%;height:100%;position:absolute;margin:0;cursor:pointer}
+.switch .track{
+  position:absolute;inset:0;background:var(--line-2);border-radius:999px;
+  transition:background var(--dur-micro) ease;
+}
+.switch .knob{
+  position:absolute;top:var(--space-3xs);left:var(--space-3xs);
+  width:var(--space-sm);height:var(--space-sm);background:var(--paper);border-radius:999px;
+  transition:transform var(--dur-micro) var(--ease-reveal);
+}
+.switch input:checked + .track{background:var(--brand)}
+.switch input:checked ~ .knob{transform:translateX(var(--space-md))}
+.switch input:focus-visible + .track{outline:2px solid var(--brand);outline-offset:2px}
+
+/* ---- preview panel ---- */
+.preview-panel{position:sticky;top:var(--space-md)}
+.preview-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-xs)}
+.preview-actions{display:flex;align-items:center;gap:var(--space-2xs)}
+.preview-actions select{
+  font:inherit;font-size:var(--text-sm);color:var(--ink);
+  background:var(--paper);border:1px solid var(--line-2);border-radius:var(--radius);
+  padding:var(--space-2xs) var(--space-xs);cursor:pointer;
+}
+.preview-actions select:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.btn-primary{
+  font-family:var(--font-body);font-size:var(--text-sm);font-weight:500;
+  background:var(--brand);color:var(--brand-ink);border:0;border-radius:var(--radius);
+  height:var(--control-h);padding:0 var(--space-md);cursor:pointer;
+  transition:transform var(--dur-micro) ease,opacity var(--dur-micro) ease;
+}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px)}
+.btn-primary:active{transform:translateY(0)}
+.preview-surface{
+  background:var(--wash);border:var(--hairline) solid var(--line);border-radius:var(--radius);
+  padding:clamp(var(--space-sm),3vw,var(--space-xl));
+}
+
+/* ---- the invoice document ---- */
+.invoice{
+  background:var(--paper);border:var(--hairline) solid var(--line);
+  aspect-ratio:var(--paper-ratio,210/297);width:100%;height:auto;
+  padding:var(--doc-pad);
+  display:flex;flex-direction:column;
+  font-size:var(--text-sm);
+  font-variant-numeric:tabular-nums;
+}
+.inv-top{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--space-sm)}
+.inv-title{font-size:var(--text-xs);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--ink-3);font-weight:500}
+.inv-number{font-size:var(--text-xl);font-weight:600;letter-spacing:var(--tracking-display);line-height:var(--leading-display);margin-top:var(--space-3xs)}
+.inv-dates{text-align:right;font-size:var(--text-xs);color:var(--ink-2)}
+.inv-dates div + div{margin-top:var(--space-3xs)}
+.inv-dates b{color:var(--ink);font-weight:500}
+.inv-parties{
+  display:grid;grid-template-columns:1fr 1fr;gap:var(--space-md);
+  margin-top:var(--space-lg);padding-top:var(--space-md);
+  border-top:var(--hairline) solid var(--line);
+}
+.inv-parties .p-label{font-size:var(--text-2xs);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--ink-3);margin-bottom:var(--space-2xs)}
+.inv-parties .p-name{font-weight:600;font-size:var(--text-sm)}
+.inv-parties .p-line{color:var(--ink-2);font-size:var(--text-xs);white-space:pre-line}
+.inv-parties .p-trn{color:var(--ink);font-size:var(--text-xs);margin-top:var(--space-3xs)}
+table.inv-items{width:100%;border-collapse:collapse;margin-top:var(--space-lg)}
+.inv-items th{
+  font-size:var(--text-2xs);letter-spacing:var(--tracking-label);text-transform:uppercase;
+  color:var(--ink-3);font-weight:500;text-align:left;
+  padding:0 0 var(--space-2xs);border-bottom:var(--hairline) solid var(--line-2);
+}
+.inv-items th.num,.inv-items td.num{text-align:right}
+.inv-items td{
+  padding:var(--space-2xs) 0;border-bottom:var(--hairline) solid var(--line);
+  font-size:var(--text-xs);color:var(--ink);vertical-align:top;
+}
+.inv-items td.desc{padding-right:var(--space-sm)}
+.inv-items .empty td{color:var(--ink-3)}
+.inv-totals{margin-left:auto;margin-top:var(--space-md);width:min(60%,280px)}
+.inv-totals .t-row{display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--ink-2);padding:var(--space-3xs) 0}
+.inv-totals .t-row.grand{
+  border-top:var(--hairline) solid var(--line-2);margin-top:var(--space-2xs);padding-top:var(--space-2xs);
+  color:var(--ink);font-weight:600;font-size:var(--text-sm);
+}
+.inv-notes{margin-top:auto;padding-top:var(--space-lg)}
+.inv-notes .p-label{font-size:var(--text-2xs);letter-spacing:var(--tracking-label);text-transform:uppercase;color:var(--ink-3);margin-bottom:var(--space-3xs)}
+.inv-notes p{font-size:var(--text-xs);color:var(--ink-2);white-space:pre-line}
+.inv-foot{
+  margin-top:var(--space-md);padding-top:var(--space-xs);
+  border-top:var(--hairline) solid var(--line);
+  font-size:var(--text-2xs);color:var(--ink-3);display:flex;justify-content:space-between;
+}
+
+/* ============ HOW IT WORKS ============ */
+.how{border-top:var(--hairline) solid var(--line);padding:var(--space-3xl) 0}
+.how h2,.faq h2{font-size:var(--text-2xl);font-weight:600;letter-spacing:var(--tracking-display);line-height:var(--leading-display)}
+.steps{margin-top:var(--space-xl)}
+.step{
+  display:grid;grid-template-columns:var(--space-2xl) 1fr;gap:var(--space-md);
+  padding:var(--space-md) 0;border-top:var(--hairline) solid var(--line);
+}
+.step:last-child{border-bottom:var(--hairline) solid var(--line)}
+.step .n{font-size:var(--text-xl);font-weight:600;color:var(--ink-3);letter-spacing:var(--tracking-display);font-variant-numeric:tabular-nums}
+.step h3{font-size:var(--text-lg);font-weight:600}
+.step p{color:var(--ink-2);font-size:var(--text-sm);margin-top:var(--space-3xs);max-width:62ch}
+
+/* ============ FAQ ============ */
+.faq{padding:0 0 var(--space-3xl)}
+.faq-list{margin-top:var(--space-xl);border-top:var(--hairline) solid var(--line)}
+.faq-list details{border-bottom:var(--hairline) solid var(--line)}
+.faq-list summary{
+  list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;
+  gap:var(--space-sm);padding:var(--space-sm) 0;font-weight:500;font-size:var(--text-base);
+  transition:color var(--dur-micro) ease;
+}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary:hover{color:var(--brand)}
+.faq-list summary .x{color:var(--ink-3);font-weight:400;transition:transform var(--dur-micro) var(--ease-reveal);flex:none}
+.faq-list details[open] summary .x{transform:rotate(45deg)}
+.faq-list .a{padding:0 0 var(--space-sm);color:var(--ink-2);font-size:var(--text-sm);max-width:68ch}
+
+/* ============ FOOTER BAND ============ */
+.footer-band{background:var(--ink);color:var(--paper);padding:var(--space-3xl) 0}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:var(--space-2xl);align-items:start}
+.footer-band h2{font-size:var(--text-2xl);font-weight:600;letter-spacing:var(--tracking-display);line-height:var(--leading-display);max-width:18ch}
+.footer-band .pitch{color:var(--paper-2);margin-top:var(--space-sm);font-size:var(--text-sm);max-width:44ch}
+.btn-invert{
+  display:inline-block;margin-top:var(--space-md);
+  background:var(--paper);color:var(--ink);font-weight:500;font-size:var(--text-sm);
+  border-radius:var(--radius);padding:var(--space-xs) var(--space-md);
+  transition:opacity var(--dur-micro) ease,transform var(--dur-micro) ease;
+}
+.btn-invert:hover{opacity:.85;transform:translateY(-1px)}
+.footer-tools .label{color:var(--paper-2);opacity:.8}
+.footer-tools ul{list-style:none;margin-top:var(--space-sm)}
+.footer-tools li{border-top:var(--hairline) solid var(--line-dark)}
+.footer-tools li:last-child{border-bottom:var(--hairline) solid var(--line-dark)}
+.footer-tools a{
+  display:block;padding:var(--space-xs) 0;font-size:var(--text-sm);color:var(--paper-2);
+  transition:color var(--dur-micro) ease,padding-left var(--dur-micro) ease;
+}
+.footer-tools a:hover{color:var(--paper);padding-left:var(--space-2xs)}
+.footer-meta{
+  margin-top:var(--space-2xl);padding-top:var(--space-md);
+  border-top:var(--hairline) solid var(--line-dark);
+  display:flex;justify-content:space-between;gap:var(--space-sm);
+  font-size:var(--text-xs);color:var(--paper-2);
+}
+.footer-meta a:hover{color:var(--paper)}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 960px){
+  .workspace-grid{grid-template-columns:1fr}
+  .preview-panel{position:static}
+  .footer-grid{grid-template-columns:1fr;gap:var(--space-xl)}
+  .site-header .container{height:var(--space-xl)}
+}
+@media (max-width: 480px){
+  .field-row,.field-row-3{grid-template-columns:1fr}
+  .li-head{display:none}
+  .li-row{grid-template-columns:1fr 48px 84px 24px}
+  .inv-parties{grid-template-columns:1fr;gap:var(--space-sm)}
+  .invoice{aspect-ratio:auto;min-height:0}
+}
+
+/* ============ PRINT: isolate the invoice ============ */
+@media print{
+  @page{size:A4;margin:0}
+  body.paper-letter{--paper-ratio:8.5/11}
+  body{background:var(--paper)}
+  body *{visibility:hidden}
+  #invoice,#invoice *{visibility:visible}
+  #invoice{
+    position:fixed;inset:0;width:100%;height:100%;
+    border:0;aspect-ratio:auto;margin:0;
+    padding:var(--space-2xl);
+  }
+  .preview-surface{border:0;padding:0;background:var(--paper)}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="container">
+    <a class="wordmark" href="https://mayantha.ae">Mayantha</a>
+    <nav class="header-nav">
+      <a href="https://mayantha.ae/tools">All tools</a>
+      <a class="cta" href="https://mayantha.ae/contact">Start a project</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section class="hero container">
+    <h1 class="reveal">UAE invoice generator.</h1>
+    <p class="reveal" style="transition-delay:.08s">VAT-compliant invoices with TRN - fill, preview, download. Free.</p>
+  </section>
+
+  <!-- ============ TOOL ============ -->
+  <section class="workspace container">
+    <div class="workspace-grid">
+
+      <!-- form -->
+      <div class="form-panel reveal" style="transition-delay:.14s">
+
+        <div class="form-section">
+          <span class="label">Your business</span>
+          <div class="field">
+            <label for="bizName">Business name</label>
+            <input id="bizName" type="text" value="Placeholder Studio FZ-LLC" autocomplete="organization">
+          </div>
+          <div class="field">
+            <label for="bizTrn">TRN (tax registration number)</label>
+            <input id="bizTrn" type="text" inputmode="numeric" maxlength="15" value="100234567890003" placeholder="15 digits">
+            <span class="hint" id="bizTrnHint"></span>
+          </div>
+          <div class="field">
+            <label for="bizAddr">Address</label>
+            <textarea id="bizAddr" rows="2">Office 0000, Placeholder Tower
+Dubai, United Arab Emirates</textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <span class="label">Bill to</span>
+          <div class="field">
+            <label for="cliName">Client name</label>
+            <input id="cliName" type="text" value="Sample Client Trading LLC">
+          </div>
+          <div class="field">
+            <label for="cliTrn">Client TRN (optional)</label>
+            <input id="cliTrn" type="text" inputmode="numeric" maxlength="15" value="" placeholder="15 digits, if VAT-registered">
+            <span class="hint" id="cliTrnHint"></span>
+          </div>
+          <div class="field">
+            <label for="cliAddr">Address</label>
+            <textarea id="cliAddr" rows="2">Unit 000, Placeholder Business Bay
+Dubai, United Arab Emirates</textarea>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <span class="label">Invoice details</span>
+          <div class="field-row-3">
+            <div class="field">
+              <label for="invNo">Invoice number</label>
+              <input id="invNo" type="text" value="INV-2026-041">
+            </div>
+            <div class="field">
+              <label for="invDate">Date</label>
+              <input id="invDate" type="date">
+            </div>
+            <div class="field">
+              <label for="invDue">Due date</label>
+              <input id="invDue" type="date">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <span class="label">Line items</span>
+          <div class="li-head">
+            <span>Description</span><span>Qty</span><span>Unit AED</span><span></span>
+          </div>
+          <div id="lineItems"></div>
+          <button type="button" class="add-row" id="addRow">+ Add line item</button>
+        </div>
+
+        <div class="form-section">
+          <div class="toggle-row">
+            <div class="t-copy">
+              <strong>Apply 5% VAT</strong>
+              <span>Required if you are VAT-registered with the FTA</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="vatToggle" aria-label="Apply 5% VAT" checked>
+              <span class="track"></span>
+              <span class="knob"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <span class="label">Notes</span>
+          <div class="field">
+            <label for="notes" class="sr-only" style="position:absolute;left:-9999px">Notes</label>
+            <textarea id="notes" rows="2" placeholder="Payment terms, bank details, thank-you note...">Payment due within 14 days by bank transfer.
+IBAN: AE00 0000 0000 0000 0000 000</textarea>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- preview -->
+      <div class="preview-panel reveal" style="transition-delay:.2s">
+        <div class="preview-bar">
+          <span class="label">Live preview - <span id="paperLabel">A4</span></span>
+          <div class="preview-actions">
+            <select id="paperSize" aria-label="Paper size">
+              <option value="a4" selected>A4</option>
+              <option value="letter">US Letter</option>
+            </select>
+            <button type="button" class="btn-primary" id="downloadPdf">Download PDF</button>
+          </div>
+        </div>
+        <div class="preview-surface">
+          <article class="invoice" id="invoice" aria-live="polite">
+            <div class="inv-top">
+              <div>
+                <div class="inv-title" id="pTitle">Tax Invoice</div>
+                <div class="inv-number" id="pNumber">INV-2026-041</div>
+              </div>
+              <div class="inv-dates">
+                <div>Issued <b id="pDate">-</b></div>
+                <div>Due <b id="pDue">-</b></div>
+              </div>
+            </div>
+
+            <div class="inv-parties">
+              <div>
+                <div class="p-label">From</div>
+                <div class="p-name" id="pBizName">-</div>
+                <div class="p-line" id="pBizAddr"></div>
+                <div class="p-trn" id="pBizTrn"></div>
+              </div>
+              <div>
+                <div class="p-label">Bill to</div>
+                <div class="p-name" id="pCliName">-</div>
+                <div class="p-line" id="pCliAddr"></div>
+                <div class="p-trn" id="pCliTrn"></div>
+              </div>
+            </div>
+
+            <table class="inv-items">
+              <thead>
+                <tr>
+                  <th class="desc">Description</th>
+                  <th class="num">Qty</th>
+                  <th class="num">Unit price</th>
+                  <th class="num">Amount</th>
+                </tr>
+              </thead>
+              <tbody id="pItems"></tbody>
+            </table>
+
+            <div class="inv-totals">
+              <div class="t-row"><span>Subtotal</span><span id="pSubtotal">AED 0.00</span></div>
+              <div class="t-row" id="pVatRow"><span>VAT 5%</span><span id="pVat">AED 0.00</span></div>
+              <div class="t-row grand"><span>Total due</span><span id="pTotal">AED 0.00</span></div>
+            </div>
+
+            <div class="inv-notes" id="pNotesWrap">
+              <div class="p-label">Notes</div>
+              <p id="pNotes"></p>
+            </div>
+
+            <div class="inv-foot">
+              <span id="pFootLeft">Placeholder Studio FZ-LLC</span>
+              <span></span>
+            </div>
+          </article>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ HOW IT WORKS ============ -->
+  <section class="how">
+    <div class="container">
+      <h2 class="reveal">How it works</h2>
+      <div class="steps">
+        <div class="step reveal">
+          <div class="n">01</div>
+          <div>
+            <h3>Fill in your details</h3>
+            <p>Add your business name, 15-digit TRN and address, then your client's details and the line items you're billing for. Everything stays in your browser - nothing is uploaded.</p>
+          </div>
+        </div>
+        <div class="step reveal" style="transition-delay:.08s">
+          <div class="n">02</div>
+          <div>
+            <h3>Preview the tax invoice live</h3>
+            <p>The A4 invoice on the right updates as you type - subtotal, 5% VAT and total in AED are computed instantly, with your TRN displayed the way the FTA requires.</p>
+          </div>
+        </div>
+        <div class="step reveal" style="transition-delay:.16s">
+          <div class="n">03</div>
+          <div>
+            <h3>Download as PDF</h3>
+            <p>One click exports a clean, print-ready A4 PDF you can send to your client or keep for your VAT records. Free, no signup, no watermark.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section class="faq">
+    <div class="container">
+      <h2 class="reveal">UAE VAT invoicing, answered</h2>
+      <div class="faq-list reveal" style="transition-delay:.08s">
+        <details open>
+          <summary>What must a UAE tax invoice include? <span class="x">+</span></summary>
+          <p class="a">Under FTA rules a tax invoice must show the words "Tax Invoice", your business name, address and TRN, the client's details, a sequential invoice number, the issue date, a description of each supply, the amount payable, and the VAT charged at 5%. This generator lays all of that out for you.</p>
+        </details>
+        <details>
+          <summary>Do I need to show my TRN on every invoice? <span class="x">+</span></summary>
+          <p class="a">Yes. If you are VAT-registered in the UAE, your 15-digit Tax Registration Number must appear on every tax invoice you issue. If your client is also VAT-registered, it's good practice to include their TRN too.</p>
+        </details>
+        <details>
+          <summary>What is the VAT rate in the UAE? <span class="x">+</span></summary>
+          <p class="a">The standard UAE VAT rate is 5%, applied to most goods and services. Some supplies are zero-rated or exempt - if that applies to you, switch the VAT toggle off and issue a standard invoice instead.</p>
+        </details>
+        <details>
+          <summary>Can I invoice without being VAT-registered? <span class="x">+</span></summary>
+          <p class="a">Yes. Businesses below the mandatory AED 375,000 registration threshold can issue regular invoices without VAT. Turn the 5% VAT toggle off and leave the TRN field empty - the document will render as a plain invoice.</p>
+        </details>
+        <details>
+          <summary>Is this invoice generator really free? <span class="x">+</span></summary>
+          <p class="a">Completely. No account, no watermark, no limits. Everything runs in your browser, so your business and client data never leave your device.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER BAND ============ -->
+<footer class="footer-band">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="reveal">
+        <h2>Need this done for your business?</h2>
+        <p class="pitch">Invoicing is the easy part. I design and build websites, tools and content systems for UAE businesses that want to look as sharp as their work.</p>
+        <a class="btn-invert" href="https://mayantha.ae/contact">Start a project</a>
+      </div>
+      <div class="footer-tools reveal" style="transition-delay:.08s">
+        <span class="label">More free tools</span>
+        <ul><li><a href="/whatsapp-link-generator">WhatsApp link generator</a></li><li><a href="/webp-converter">WebP converter</a></li><li><a href="/meta-length-checker">Meta length checker</a></li></ul>
+      </div>
+    </div>
+    <div class="footer-meta">
+      <span>© 2026 Mayantha - Dubai, UAE</span>
+      <a href="https://mayantha.ae">mayantha.ae</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- state ---------- */
+  var items = [
+    { desc: "Brand photography - full day shoot", qty: 1, price: 3500 },
+    { desc: "Retouching + delivery (25 selects)", qty: 25, price: 40 }
+  ];
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ---------- helpers ---------- */
+  var nf = new Intl.NumberFormat("en-AE", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function aed(n){ return "AED " + nf.format(n); }
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c];
+    });
+  }
+  function fmtDate(v){
+    if(!v) return "-";
+    var d = new Date(v + "T00:00:00");
+    if(isNaN(d)) return "-";
+    return d.toLocaleDateString("en-GB", { day:"numeric", month:"short", year:"numeric" });
+  }
+  function trnHint(raw, el, optional){
+    var digits = raw.replace(/\D/g, "");
+    if(!digits.length){
+      el.textContent = optional ? "" : "Required on UAE tax invoices";
+      el.className = "hint";
+      return;
+    }
+    if(digits.length === 15){
+      el.textContent = "Valid 15-digit TRN format";
+      el.className = "hint ok";
+    } else {
+      el.textContent = digits.length + "/15 digits";
+      el.className = "hint bad";
+    }
+  }
+
+  /* ---------- line item rows (form) ---------- */
+  function renderRows(){
+    var wrap = $("lineItems");
+    wrap.innerHTML = "";
+    items.forEach(function(it, i){
+      var row = document.createElement("div");
+      row.className = "li-row";
+      row.innerHTML =
+        '<input type="text" aria-label="Item description" placeholder="Description" value="' + esc(it.desc) + '">' +
+        '<input type="number" aria-label="Quantity" min="0" step="1" value="' + it.qty + '">' +
+        '<input type="number" aria-label="Unit price in AED" min="0" step="0.01" value="' + it.price + '">' +
+        '<button type="button" class="li-remove" aria-label="Remove line item" title="Remove">&times;</button>';
+      var inputs = row.querySelectorAll("input");
+      inputs[0].addEventListener("input", function(){ items[i].desc = this.value; renderPreview(); });
+      inputs[1].addEventListener("input", function(){ items[i].qty = parseFloat(this.value) || 0; renderPreview(); });
+      inputs[2].addEventListener("input", function(){ items[i].price = parseFloat(this.value) || 0; renderPreview(); });
+      row.querySelector(".li-remove").addEventListener("click", function(){
+        items.splice(i, 1);
+        renderRows(); renderPreview();
+      });
+      wrap.appendChild(row);
+    });
+  }
+
+  /* ---------- live preview ---------- */
+  function renderPreview(){
+    var vatOn = $("vatToggle").checked;
+
+    $("pTitle").textContent  = vatOn ? "Tax Invoice" : "Invoice";
+    $("pNumber").textContent = $("invNo").value.trim() || "INV-0000";
+    $("pDate").textContent   = fmtDate($("invDate").value);
+    $("pDue").textContent    = fmtDate($("invDue").value);
+
+    var bizName = $("bizName").value.trim() || "Your business name";
+    $("pBizName").textContent  = bizName;
+    $("pFootLeft").textContent = bizName;
+    $("pBizAddr").textContent  = $("bizAddr").value.trim();
+    var bizTrn = $("bizTrn").value.replace(/\D/g, "");
+    $("pBizTrn").textContent = bizTrn ? "TRN " + bizTrn : "";
+
+    $("pCliName").textContent = $("cliName").value.trim() || "Client name";
+    $("pCliAddr").textContent = $("cliAddr").value.trim();
+    var cliTrn = $("cliTrn").value.replace(/\D/g, "");
+    $("pCliTrn").textContent = cliTrn ? "TRN " + cliTrn : "";
+
+    /* items table */
+    var tbody = $("pItems");
+    tbody.innerHTML = "";
+    var subtotal = 0;
+    if(!items.length){
+      tbody.innerHTML = '<tr class="empty"><td class="desc" colspan="4">No line items yet - add one on the left.</td></tr>';
+    }
+    items.forEach(function(it){
+      var amount = (it.qty || 0) * (it.price || 0);
+      subtotal += amount;
+      var tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td class="desc">' + (esc(it.desc) || '<span style="color:var(--ink-3)">Untitled item</span>') + "</td>" +
+        '<td class="num">' + (it.qty || 0) + "</td>" +
+        '<td class="num">' + nf.format(it.price || 0) + "</td>" +
+        '<td class="num">' + nf.format(amount) + "</td>";
+      tbody.appendChild(tr);
+    });
+
+    var vat = vatOn ? subtotal * 0.05 : 0;
+    $("pSubtotal").textContent = aed(subtotal);
+    $("pVat").textContent = aed(vat);
+    $("pVatRow").style.display = vatOn ? "" : "none";
+    $("pTotal").textContent = aed(subtotal + vat);
+
+    /* notes */
+    var notes = $("notes").value.trim();
+    $("pNotes").textContent = notes;
+    $("pNotesWrap").style.display = notes ? "" : "none";
+
+    /* TRN hints */
+    trnHint($("bizTrn").value, $("bizTrnHint"), false);
+    trnHint($("cliTrn").value, $("cliTrnHint"), true);
+  }
+
+  /* ---------- wiring ---------- */
+  ["bizName","bizTrn","bizAddr","cliName","cliTrn","cliAddr","invNo","invDate","invDue","notes"]
+    .forEach(function(id){ $(id).addEventListener("input", renderPreview); });
+  $("vatToggle").addEventListener("change", renderPreview);
+  $("addRow").addEventListener("click", function(){
+    items.push({ desc:"", qty:1, price:0 });
+    renderRows(); renderPreview();
+    var last = $("lineItems").lastElementChild;
+    if(last) last.querySelector("input").focus();
+  });
+  $("downloadPdf").addEventListener("click", function(){ window.print(); });
+
+  /* default dates: today + 14 days */
+  function iso(d){ return d.toISOString().slice(0,10); }
+  var today = new Date();
+  var due = new Date(today.getTime() + 14 * 86400000);
+  $("invDate").value = iso(today);
+  $("invDue").value = iso(due);
+
+  renderRows();
+  renderPreview();
+
+  /* ---------- entry reveals ---------- */
+  var reveals = document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(function(el){ io.observe(el); });
+  } else {
+    reveals.forEach(function(el){ el.classList.add("in"); });
+  }
+})();
+</script>
+<script>
+(function(){
+  var sel=document.getElementById('paperSize'), lbl=document.getElementById('paperLabel');
+  var pageStyle=document.createElement('style'); document.head.appendChild(pageStyle);
+  function apply(){
+    var letter=sel.value==='letter';
+    document.body.classList.toggle('paper-letter',letter);
+    document.documentElement.style.setProperty('--paper-ratio',letter?'8.5/11':'210/297');
+    lbl.textContent=letter?'US Letter':'A4';
+    pageStyle.textContent='@media print{@page{size:'+(letter?'Letter':'A4')+';margin:0}}';
+  }
+  sel.addEventListener('change',apply); apply();
+})();
+</script>
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "UAE Invoice Generator",
+    "url": "https://mayantha.ae/uae-invoice-generator",
+    "description": "Create a VAT-compliant UAE tax invoice with your TRN, apply 5% VAT automatically and download a free PDF in seconds. No signup, no watermark, no limits.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "provider": {
+      "@type": "Person",
+      "name": "Mayantha Jayasinghe",
+      "url": "https://mayantha.ae"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What must a UAE tax invoice include?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Under FTA rules a tax invoice must show the words \"Tax Invoice\", your business name, address and TRN, the client's details, a sequential invoice number, the issue date, a description of each supply, the amount payable, and the VAT charged at 5%. This generator lays all of that out for you."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do I need to show my TRN on every invoice?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. If you are VAT-registered in the UAE, your 15-digit Tax Registration Number must appear on every tax invoice you issue. If your client is also VAT-registered, it's good practice to include their TRN too."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is the VAT rate in the UAE?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "The standard UAE VAT rate is 5%, applied to most goods and services. Some supplies are zero-rated or exempt - if that applies to you, switch the VAT toggle off and issue a standard invoice instead."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I invoice without being VAT-registered?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Businesses below the mandatory AED 375,000 registration threshold can issue regular invoices without VAT. Turn the 5% VAT toggle off and leave the TRN field empty - the document will render as a plain invoice."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this invoice generator really free?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Completely. No account, no watermark, no limits. Everything runs in your browser, so your business and client data never leave your device."
+        }
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://mayantha.ae"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Tools",
+        "item": "https://mayantha.ae/tools"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": "UAE Invoice Generator",
+        "item": "https://mayantha.ae/uae-invoice-generator"
+      }
+    ]
+  }
+]
+</script>
+</body>
+</html>
