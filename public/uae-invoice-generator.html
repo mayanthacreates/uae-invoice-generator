@@ -146,7 +146,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .field .hint.ok{color:var(--green-strong)}
 .field .hint.bad{color:var(--red)}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-xs)}
-.field-row-3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:var(--space-xs)}
 
 /* ---- line items ---- */
 .li-head{display:grid;grid-template-columns:1fr 56px 96px 24px;gap:var(--space-2xs);margin-bottom:var(--space-2xs)}
@@ -337,7 +336,7 @@ table.inv-items{width:100%;border-collapse:collapse;margin-top:var(--space-lg)}
   .site-header .container{height:var(--space-xl)}
 }
 @media (max-width: 480px){
-  .field-row,.field-row-3{grid-template-columns:1fr}
+  .field-row{grid-template-columns:1fr}
   .li-head{display:none}
   .li-row{grid-template-columns:1fr 48px 84px 24px}
   .inv-parties{grid-template-columns:1fr;gap:var(--space-sm)}
@@ -466,11 +465,11 @@ Dubai, United Arab Emirates</textarea>
 
         <div class="form-section">
           <span class="label">Invoice details</span>
-          <div class="field-row-3">
-            <div class="field">
-              <label for="invNo">Invoice number</label>
-              <input id="invNo" type="text" value="INV-2026-041">
-            </div>
+          <div class="field">
+            <label for="invNo">Invoice number</label>
+            <input id="invNo" type="text" value="INV-2026-041">
+          </div>
+          <div class="field-row">
             <div class="field">
               <label for="invDate">Date</label>
               <input id="invDate" type="date">
