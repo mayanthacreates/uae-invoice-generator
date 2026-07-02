@@ -11,6 +11,10 @@
 <meta property="og:title" content="UAE Invoice Generator - Free VAT Invoice with TRN">
 <meta property="og:description" content="Create a VAT-compliant UAE tax invoice with your TRN, apply 5% VAT automatically and download a free PDF in seconds. No signup, no watermark, no limits.">
 <meta property="og:site_name" content="Mayantha">
+  <meta property="og:image" content="https://mayantha.ae/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:image" content="https://mayantha.ae/og.png">
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -354,6 +358,23 @@ table.inv-items{width:100%;border-collapse:collapse;margin-top:var(--space-lg)}
   }
   .preview-surface{border:0;padding:0;background:var(--paper)}
 }
+
+/* logo upload control + document logo */
+.sr-file{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.logo-row{display:flex;align-items:center;gap:var(--space-xs)}
+.logo-btn{display:inline-flex;align-items:center;padding:var(--space-2xs) var(--space-sm);
+  border:1px solid var(--line-2);border-radius:var(--radius);font-size:var(--text-sm);
+  color:var(--ink);cursor:pointer;transition:border-color .2s,background .2s}
+.logo-btn:hover{background:var(--wash)}
+.sr-file:focus-visible + .logo-btn{outline:2px solid var(--brand);outline-offset:1px}
+#logoThumb{height:36px;max-width:120px;object-fit:contain;border:1px solid var(--line);
+  border-radius:var(--radius);padding:2px;background:#fff}
+.logo-remove{background:none;border:0;padding:0;font-size:var(--text-xs);color:var(--ink-3);
+  cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+.logo-remove:hover{color:var(--red)}
+.inv-logo{display:block;max-height:44px;max-width:180px;object-fit:contain;
+  object-position:left;margin-bottom:var(--space-sm)}
+#webNudge a{color:var(--brand)}
 </style>
 </head>
 <body>
@@ -386,6 +407,16 @@ table.inv-items{width:100%;border-collapse:collapse;margin-top:var(--space-lg)}
         <div class="form-section">
           <span class="label">Your business</span>
           <div class="field">
+            <label for="bizLogo">Logo (optional)</label>
+            <div class="logo-row">
+              <input id="bizLogo" type="file" accept="image/*" class="sr-file">
+              <label for="bizLogo" class="logo-btn" id="logoBtnLabel">Upload logo</label>
+              <img id="logoThumb" alt="" hidden>
+              <button type="button" id="logoRemove" class="logo-remove" hidden>Remove</button>
+            </div>
+            <span class="hint">PNG or SVG on a transparent background prints best. Max 2MB.</span>
+          </div>
+          <div class="field">
             <label for="bizName">Business name</label>
             <input id="bizName" type="text" value="Placeholder Studio FZ-LLC" autocomplete="organization">
           </div>
@@ -398,6 +429,20 @@ table.inv-items{width:100%;border-collapse:collapse;margin-top:var(--space-lg)}
             <label for="bizAddr">Address</label>
             <textarea id="bizAddr" rows="2">Office 0000, Placeholder Tower
 Dubai, United Arab Emirates</textarea>
+          </div>
+          <div class="field">
+            <label for="bizEmail">Email (shown in the invoice footer)</label>
+            <input id="bizEmail" type="email" placeholder="billing@yourbusiness.ae" autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="bizPhone">Contact number</label>
+            <input id="bizPhone" type="tel" placeholder="+971 50 000 0000" autocomplete="tel">
+          </div>
+          <div class="field">
+            <label for="bizWeb">Website</label>
+            <input id="bizWeb" type="text" placeholder="yourbusiness.ae" autocomplete="url">
+            <span class="hint" id="webNudge" hidden>No website yet? I build fast ones -
+              <a href="https://mayantha.ae/services/websites-landing-pages" target="_blank" rel="noopener">mayantha.ae</a></span>
           </div>
         </div>
 
@@ -487,6 +532,7 @@ IBAN: AE00 0000 0000 0000 0000 000</textarea>
           <article class="invoice" id="invoice" aria-live="polite">
             <div class="inv-top">
               <div>
+                <img class="inv-logo" id="pLogo" alt="" hidden>
                 <div class="inv-title" id="pTitle">Tax Invoice</div>
                 <div class="inv-number" id="pNumber">INV-2026-041</div>
               </div>
@@ -536,7 +582,7 @@ IBAN: AE00 0000 0000 0000 0000 000</textarea>
 
             <div class="inv-foot">
               <span id="pFootLeft">Placeholder Studio FZ-LLC</span>
-              <span></span>
+              <span id="pFootRight"></span>
             </div>
           </article>
         </div>
@@ -704,6 +750,10 @@ IBAN: AE00 0000 0000 0000 0000 000</textarea>
     var bizName = $("bizName").value.trim() || "Your business name";
     $("pBizName").textContent  = bizName;
     $("pFootLeft").textContent = bizName;
+    var contacts = [$("bizEmail").value.trim(), $("bizPhone").value.trim(), $("bizWeb").value.trim()]
+      .filter(Boolean).join("  \u00b7  ");
+    $("pFootRight").textContent = contacts;
+    $("webNudge").hidden = !!$("bizWeb").value.trim();
     $("pBizAddr").textContent  = $("bizAddr").value.trim();
     var bizTrn = $("bizTrn").value.replace(/\D/g, "");
     $("pBizTrn").textContent = bizTrn ? "TRN " + bizTrn : "";
@@ -749,7 +799,7 @@ IBAN: AE00 0000 0000 0000 0000 000</textarea>
   }
 
   /* ---------- wiring ---------- */
-  ["bizName","bizTrn","bizAddr","cliName","cliTrn","cliAddr","invNo","invDate","invDue","notes"]
+  ["bizName","bizTrn","bizAddr","bizEmail","bizPhone","bizWeb","cliName","cliTrn","cliAddr","invNo","invDate","invDue","notes"]
     .forEach(function(id){ $(id).addEventListener("input", renderPreview); });
   $("vatToggle").addEventListener("change", renderPreview);
   $("addRow").addEventListener("click", function(){
@@ -890,6 +940,25 @@ IBAN: AE00 0000 0000 0000 0000 000</textarea>
     ]
   }
 ]
+</script>
+<script>
+(function(){
+  var input=document.getElementById('bizLogo'), thumb=document.getElementById('logoThumb'),
+      doc=document.getElementById('pLogo'), rm=document.getElementById('logoRemove'),
+      btn=document.getElementById('logoBtnLabel');
+  function clear(){ thumb.hidden=true; doc.hidden=true; rm.hidden=true; thumb.src=''; doc.src='';
+    btn.textContent='Upload logo'; input.value=''; }
+  input.addEventListener('change',function(){
+    var f=input.files && input.files[0];
+    if(!f) return;
+    if(f.size > 2*1024*1024){ alert('Logo must be under 2MB.'); clear(); return; }
+    var r=new FileReader();
+    r.onload=function(){ thumb.src=r.result; doc.src=r.result;
+      thumb.hidden=false; doc.hidden=false; rm.hidden=false; btn.textContent='Replace logo'; };
+    r.readAsDataURL(f);
+  });
+  rm.addEventListener('click',clear);
+})();
 </script>
 </body>
 </html>
