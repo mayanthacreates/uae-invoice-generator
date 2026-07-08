@@ -348,14 +348,14 @@ table.inv-items{width:100%;border-collapse:collapse;margin-top:var(--space-lg)}
   @page{size:A4;margin:0}
   body.paper-letter{--paper-ratio:8.5/11}
   body{background:var(--paper)}
-  body *{visibility:hidden}
-  #invoice,#invoice *{visibility:visible}
+  .site-header,.hero,.form-panel,.preview-bar,.how,.faq,.footer-band{display:none!important}
+  .workspace,.workspace-grid,.preview-panel{display:block!important;margin:0!important;padding:0!important;position:static!important}
+  .preview-surface{border:0;padding:0;background:var(--paper)}
   #invoice{
-    position:fixed;inset:0;width:100%;height:100%;
+    width:100%;height:auto;
     border:0;aspect-ratio:auto;margin:0;
     padding:var(--space-2xl);
   }
-  .preview-surface{border:0;padding:0;background:var(--paper)}
 }
 
 /* logo upload control + document logo */
@@ -807,7 +807,12 @@ IBAN: AE00 0000 0000 0000 0000 000</textarea>
     var last = $("lineItems").lastElementChild;
     if(last) last.querySelector("input").focus();
   });
-  $("downloadPdf").addEventListener("click", function(){ window.print(); });
+  var origTitle = document.title;
+  $("downloadPdf").addEventListener("click", function(){
+    document.title = $("invNo").value.trim() || origTitle;
+    window.print();
+  });
+  window.addEventListener("afterprint", function(){ document.title = origTitle; });
 
   /* default dates: today + 14 days */
   function iso(d){ return d.toISOString().slice(0,10); }
