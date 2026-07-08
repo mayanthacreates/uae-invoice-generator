@@ -132,7 +132,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,
 .field{display:flex;flex-direction:column;gap:var(--space-3xs);margin-bottom:var(--space-xs)}
 .field:last-child{margin-bottom:0}
 .field label{font-size:var(--text-xs);color:var(--ink-2);font-weight:500}
-.field input,.field textarea{
+.field input,.field textarea,.field select{
   font-family:var(--font-body);font-size:var(--text-sm);color:var(--ink);
   border:var(--hairline) solid var(--line-2);border-radius:var(--radius);
   height:var(--control-h);padding:0 var(--space-xs);background:var(--paper);
@@ -371,8 +371,11 @@ table.inv-items{width:100%;border-collapse:collapse;margin-top:var(--space-lg)}
 .logo-remove{background:none;border:0;padding:0;font-size:var(--text-xs);color:var(--ink-3);
   cursor:pointer;text-decoration:underline;text-underline-offset:2px}
 .logo-remove:hover{color:var(--red)}
+.logo-size{width:auto;height:var(--control-h);padding:0 var(--space-2xs);font-size:var(--text-sm);cursor:pointer}
 .inv-logo{display:block;max-height:44px;max-width:180px;object-fit:contain;
   object-position:left;margin-bottom:var(--space-sm)}
+.inv-logo.size-medium{max-height:64px;max-width:240px}
+.inv-logo.size-large{max-height:88px;max-width:300px}
 #webNudge a{color:var(--brand)}
 </style>
 </head>
@@ -412,6 +415,11 @@ table.inv-items{width:100%;border-collapse:collapse;margin-top:var(--space-lg)}
               <label for="bizLogo" class="logo-btn" id="logoBtnLabel">Upload logo</label>
               <img id="logoThumb" alt="" hidden>
               <button type="button" id="logoRemove" class="logo-remove" hidden>Remove</button>
+              <select id="logoSize" class="logo-size" aria-label="Logo size" hidden>
+                <option value="small" selected>Small</option>
+                <option value="medium">Medium</option>
+                <option value="large">Large</option>
+              </select>
             </div>
             <span class="hint">PNG or SVG on a transparent background prints best. Max 2MB.</span>
           </div>
@@ -949,16 +957,19 @@ IBAN: AE00 0000 0000 0000 0000 000</textarea>
 (function(){
   var input=document.getElementById('bizLogo'), thumb=document.getElementById('logoThumb'),
       doc=document.getElementById('pLogo'), rm=document.getElementById('logoRemove'),
-      btn=document.getElementById('logoBtnLabel');
-  function clear(){ thumb.hidden=true; doc.hidden=true; rm.hidden=true; thumb.src=''; doc.src='';
+      btn=document.getElementById('logoBtnLabel'), size=document.getElementById('logoSize');
+  function applySize(){ doc.classList.remove('size-medium','size-large');
+    if(size.value !== 'small') doc.classList.add('size-'+size.value); }
+  function clear(){ thumb.hidden=true; doc.hidden=true; rm.hidden=true; size.hidden=true; thumb.src=''; doc.src='';
     btn.textContent='Upload logo'; input.value=''; }
+  size.addEventListener('change', applySize);
   input.addEventListener('change',function(){
     var f=input.files && input.files[0];
     if(!f) return;
     if(f.size > 2*1024*1024){ alert('Logo must be under 2MB.'); clear(); return; }
     var r=new FileReader();
     r.onload=function(){ thumb.src=r.result; doc.src=r.result;
-      thumb.hidden=false; doc.hidden=false; rm.hidden=false; btn.textContent='Replace logo'; };
+      thumb.hidden=false; doc.hidden=false; rm.hidden=false; size.hidden=false; btn.textContent='Replace logo'; applySize(); };
     r.readAsDataURL(f);
   });
   rm.addEventListener('click',clear);
