@@ -1,9 +1,28 @@
-# UAE Invoice Generator
+# UAE tax invoice generator
 
-Free tool at https://mayantha.ae/uae-invoice-generator - a single static page served by a
-Cloudflare Worker routed onto the mayantha.ae zone.
+Fills a VAT-ready invoice with TRN fields, line items and totals, previews it live, and exports to PDF.
 
-- `public/uae-invoice-generator.html` - the whole tool (self-contained HTML/CSS/JS)
-- `wrangler.jsonc` - static assets Worker + zone route
+Live: https://mayantha.ae/tools/uae-tax-invoice-generator
 
-Deploy: `npx wrangler deploy`
+## How it works
+
+One self-contained page - `public/uae-invoice-generator.html` holds the markup, styles and logic.
+There is no backend and no build step. Nothing is uploaded anywhere; the work happens
+in the browser.
+
+## Running it
+
+```sh
+npx wrangler dev     # local
+npx wrangler deploy  # to your own Cloudflare account
+```
+
+`wrangler.jsonc` serves `public/` as static assets. Deploying gives you a
+`workers.dev` URL; add a `routes` entry if you want it on your own domain.
+
+## Note
+
+The live version linked above is a React port that runs inside mayantha.ae. This repo
+is the original standalone implementation - same behaviour, no framework.
+
+MIT licensed.
